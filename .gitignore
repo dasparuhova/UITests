@@ -1,0 +1,10 @@
+*.suo
+*.user
+*.sqlite3
+*.sqlite
+*.log 
+*.sql
+_ReSharper.*
+bin
+obj
+packages
