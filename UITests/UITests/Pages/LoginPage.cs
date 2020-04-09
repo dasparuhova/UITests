@@ -53,7 +53,7 @@ namespace UITests.Pages
             RegisterMenuCollapsed.Click();
 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(UserLoginForm));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(UserName));
 
             if (userName != null)
             {

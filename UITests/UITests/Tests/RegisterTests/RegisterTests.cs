@@ -9,8 +9,7 @@ using Assert = Xunit.Assert;
 
 namespace UITests
 {
-    public class RegisterTests
-    {
+    public class RegisterTests : TestBase    {
 
         [Fact]
         public void User_Can_Create_Account_Only_With_Required_Fields() 
@@ -73,8 +72,7 @@ namespace UITests
             string userName = GenerateString(10);
             string password = GenerateString(10);
             string email = "djovana.emilova@gmail.com";
-            string expectedErrorMessage = "The email address that you specified is already associated with an existing Vectorworks account." +
-                "Please sign in using your existing username, or click on the \"Can't access your account?\" link in the section above if you don't remember it.";
+            string expectedErrorMessage = "The email address that you specified is already associated with an existing Vectorworks account. ";
 
             //Act
             var loginPage = new LoginPage();
