@@ -94,6 +94,16 @@ namespace UITests.Pages
             }
         }
 
+        /// <summary>
+        /// Enter email in order to check validation of the email
+        /// </summary>
+        public void EnterEmail(string email)
+        {
+            EmailInput.Click();
+            EmailInput.Clear();             
+            EmailInput.SendKeys(email);
+        }
+
         
         public void ClickCreateAccountButton() => CreateAccountButton.Click();
 
@@ -102,6 +112,12 @@ namespace UITests.Pages
         { 
             var count = driver.FindElements(By.XPath($"//{tag}[contains(text(), '" + text + "')]"));
             return count.Count;
+        }
+
+        public void PressEnterToCheckEmailValidationMessage()
+        {
+            EmailInput.SendKeys(Keys.Enter);
+            Thread.Sleep(1000);
         }
         #endregion
 

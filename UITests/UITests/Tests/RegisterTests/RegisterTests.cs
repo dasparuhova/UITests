@@ -71,7 +71,7 @@ namespace UITests
             //Arrange
             string userName = GenerateString(10);
             string password = GenerateString(10);
-            string email = "djovana.emilova@gmail.com";
+            string email = "djovana.emilova@gmail.com"; //Since I already have a account
             string expectedErrorMessage = "The email address that you specified is already associated with an existing Vectorworks account. ";
 
             //Act
@@ -82,6 +82,32 @@ namespace UITests
             //Assert Verify validation errors appears and the user cannot login
             Assert.True(loginPage.IsTextDisplayed(expectedErrorMessage,"li"));
             
+        }
+
+        [Fact]
+        public void Error_Message_If_The_Email_Is_NotValid()
+        {
+            //Arrange
+            string userName = GenerateString(10);
+            string password = GenerateString(10);
+            string notValidEmail = GenerateString(10);
+            string validEmail = GenerateString(10) + "@test.com";
+            string expectedErrorMessage = "Enter a valid email address.";
+
+            //Act
+            var loginPage = new LoginPage();
+            loginPage.EnterAccountInfo(userName: userName, password: password, confirmPassword: password, email: notValidEmail, name: null, lastName: null);
+            loginPage.PressEnterToCheckEmailValidationMessage();
+
+            //Assert Verify validation errors appears if the email address is not valid
+            Assert.True(loginPage.IsTextDisplayed(expectedErrorMessage, "li"));
+
+            //Act
+            loginPage.EnterEmail(validEmail);
+            loginPage.PressEnterToCheckEmailValidationMessage();
+
+            //Assert Verify validation errors disappear after entering valid email and pressing enter
+            Assert.False(loginPage.IsTextDisplayed(expectedErrorMessage, "li"));
         }
 
 
