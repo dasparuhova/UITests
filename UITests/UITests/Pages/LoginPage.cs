@@ -5,12 +5,14 @@ using System.Threading;
 
 namespace UITests.Pages
 {
-    public class LoginPage : TestBase
+    public class LoginPage
     {
         private WebDriverWait wait;
+        private readonly IWebDriver driver;
 
-        public LoginPage()  : base()
+        public LoginPage(IWebDriver driver)
         {
+            this.driver = driver;
             this.wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(LogInMenu));
         }
@@ -19,14 +21,12 @@ namespace UITests.Pages
         private By LogInMenu => By.Id("log-in-menu");
         private By UserName => By.Name("login");
         private By Password => By.XPath("//input[contains(@name, 'password') and @placeholder='Create a password']"); //It's not the best xpath, but it's hard to locate this one
-        private By ConfirmPassword => By.XPath("//input[contains(@name, 'password') and @placeholder='Confirm your password']"); 
+        private By ConfirmPassword => By.XPath("//input[contains(@name, 'password') and @placeholder='Confirm your password']");
         private By Email => By.XPath("//input[contains(@name, 'email') and @placeholder='Email address']");
         private By PhoneNumber => By.Id("phone");
         private By FirstName => By.Name("first_name");
         private By LastName => By.Name("last_name");
         private By CreateAccount => By.XPath("//button[contains(text(), 'Create account')]");
-        private By UserLoginForm => By.ClassName("user-login-menu");
-        private By LoginForm => By.ClassName("nav-header btn-link");
 
         private IWebElement UserNameInput => driver.FindElement(UserName);
         private IWebElement PasswordInput => driver.FindElement(Password);
@@ -36,10 +36,8 @@ namespace UITests.Pages
         private IWebElement FirstNameInput => driver.FindElement(FirstName);
         private IWebElement LastNameInput => driver.FindElement(LastName);
         private IWebElement CreateAccountButton => driver.FindElement(CreateAccount);
-
         private IWebElement RegisterMenuCollapsed => driver.FindElement(By.XPath("//*[contains(@class, 'nav-header collapsed btn-link')]"));
 
-        private IWebElement LoginFormElement => driver.FindElement(LoginForm);
 
         #endregion
 
@@ -100,28 +98,51 @@ namespace UITests.Pages
         public void EnterEmail(string email)
         {
             EmailInput.Click();
-            EmailInput.Clear();             
+            EmailInput.Clear();
             EmailInput.SendKeys(email);
         }
 
-        
-        public void ClickCreateAccountButton() => CreateAccountButton.Click();
+        /// <summary>
+        /// After clicking create account with valid credations home page should be displayed
+        /// </summary>
+        /// <returns></returns>
+        public HomePage ClickCreateAccountButtonValidCredentions()
+        {
+            CreateAccountButton.Click();
+            return new HomePage(driver);
+        }
+
+        /// <summary>
+        /// After clicking create account with not valid credations login page should be displayed
+        /// </summary>
+        /// <returns></returns>
+        public LoginPage ClickCreateAccountButtonInValidCredentions()
+        {
+            CreateAccountButton.Click();
+            return new LoginPage(driver);
+        }
 
         //Find all element according to the criteria on the page
         public int GetElementsCount(string text, string tag = "span")
-        { 
+        {
             var count = driver.FindElements(By.XPath($"//{tag}[contains(text(), '" + text + "')]"));
             return count.Count;
         }
 
-        public void PressEnterToCheckEmailValidationMessage()
+        /// <summary>
+        /// Press enter to check email validation message
+        /// </summary>
+        /// <returns></returns>
+        public LoginPage PressEnterEmailInput()
         {
             EmailInput.SendKeys(Keys.Enter);
             Thread.Sleep(1000);
+            return new LoginPage(driver);
         }
         #endregion
 
         #region Assertions
+
         public bool IsTextDisplayed(string text, string tag = "span")
         {
             if (string.IsNullOrEmpty(text)) return false;

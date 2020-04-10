@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UITests.Pages;
 
 namespace UITests
 {
     public class TestBase : IDisposable
     {
-        protected static IWebDriver driver;
+        private IWebDriver driver;
         private readonly string _url = "https://sso-dev.vectorworks.net/accounts/login/"; //The address needs to be in a separate file
 
         public TestBase()
@@ -19,9 +20,17 @@ namespace UITests
             {
                 driver = new ChromeDriver("./");
                 driver.Manage().Window.Maximize();
-                driver.Navigate().GoToUrl(_url);
+
             }
         }
+
+        public LoginPage OpenSite()
+        {
+            driver.Navigate().GoToUrl(_url);
+
+            return new LoginPage(driver);
+        }
+
 
         public void Dispose()
         {

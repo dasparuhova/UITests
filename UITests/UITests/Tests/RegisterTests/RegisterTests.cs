@@ -9,10 +9,11 @@ using Assert = Xunit.Assert;
 
 namespace UITests
 {
-    public class RegisterTests : TestBase    {
+    public class RegisterTests : TestBase
+    {
 
         [Fact]
-        public void User_Can_Create_Account_Only_With_Required_Fields() 
+        public void User_Can_Create_Account_Only_With_Required_Fields()
         {
             //Arrange
             string userName = GenerateString(10);
@@ -20,12 +21,11 @@ namespace UITests
             string email = GenerateString(10) + "@test.com"; //There is validation in email address which is not clear for me how to have successful test
 
             //Act
-            var loginPage = new LoginPage();           
+            LoginPage loginPage = OpenSite();
             loginPage.EnterAccountInfo(userName: userName, password: password, confirmPassword: password, email: email, name: userName, lastName: userName);
-            loginPage.ClickCreateAccountButton();
+            HomePage homePage = loginPage.ClickCreateAccountButtonValidCredentions();
 
             //Assert Verify home page is displayed for newly user
-            var homePage = new HomePage();
             Assert.True(homePage.IsContentAccountDisplayed());
             Assert.True(homePage.IsTextDisplayed(email));
         }
@@ -41,12 +41,11 @@ namespace UITests
             string phone = "201-555-0123";
 
             //Act
-            var loginPage = new LoginPage();
+            LoginPage loginPage = OpenSite();
             loginPage.EnterAccountInfo(userName: userName, password: password, confirmPassword: password, email: email, name: userName, lastName: userName, phone: phone);
-            loginPage.ClickCreateAccountButton();
+            HomePage homePage = loginPage.ClickCreateAccountButtonValidCredentions();
 
             //Assert Verify home page is displayed for newly user
-            var homePage = new HomePage();
             Assert.True(homePage.IsContentAccountDisplayed());
             Assert.True(homePage.IsTextDisplayed(email));
         }
@@ -54,12 +53,12 @@ namespace UITests
         [Fact]
         public void User_Cannot_Create_Account_Without_Entering_Required_Fields()
         {
-            var loginPage = new LoginPage();
+            LoginPage loginPage = OpenSite();
             loginPage.EnterAccountInfo(userName: "", password: "", confirmPassword: "", email: "", name: "", lastName: "", phone: "");
-            loginPage.ClickCreateAccountButton();
+            loginPage.ClickCreateAccountButtonInValidCredentions();
 
             //Assert Verify validation errors appear and the user cannot login
-            Assert.True(loginPage.IsTextDisplayed("This field may not be blank.","li"));
+            Assert.True(loginPage.IsTextDisplayed("This field may not be blank.", "li"));
             var count = loginPage.GetElementsCount("This field may not be blank.", "li");
             //Verify the message are 6 since there are 6 required fields
             Assert.Equal(2, count); //Count is 2 in the implementation
@@ -75,13 +74,13 @@ namespace UITests
             string expectedErrorMessage = "The email address that you specified is already associated with an existing Vectorworks account. ";
 
             //Act
-            var loginPage = new LoginPage();
+            LoginPage loginPage = OpenSite();
             loginPage.EnterAccountInfo(userName: userName, password: password, confirmPassword: password, email: email, name: userName, lastName: userName);
-            loginPage.ClickCreateAccountButton();
+            loginPage.ClickCreateAccountButtonInValidCredentions();
 
             //Assert Verify validation errors appears and the user cannot login
-            Assert.True(loginPage.IsTextDisplayed(expectedErrorMessage,"li"));
-            
+            Assert.True(loginPage.IsTextDisplayed(expectedErrorMessage, "li"));
+
         }
 
         [Fact]
@@ -95,16 +94,16 @@ namespace UITests
             string expectedErrorMessage = "Enter a valid email address.";
 
             //Act
-            var loginPage = new LoginPage();
+            LoginPage loginPage = OpenSite();
             loginPage.EnterAccountInfo(userName: userName, password: password, confirmPassword: password, email: notValidEmail, name: null, lastName: null);
-            loginPage.PressEnterToCheckEmailValidationMessage();
+            loginPage.PressEnterEmailInput();
 
             //Assert Verify validation errors appears if the email address is not valid
             Assert.True(loginPage.IsTextDisplayed(expectedErrorMessage, "li"));
 
             //Act
             loginPage.EnterEmail(validEmail);
-            loginPage.PressEnterToCheckEmailValidationMessage();
+            loginPage.PressEnterEmailInput();
 
             //Assert Verify validation errors disappear after entering valid email and pressing enter
             Assert.False(loginPage.IsTextDisplayed(expectedErrorMessage, "li"));

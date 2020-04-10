@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace UITests.Pages
 {
-    public class HomePage : TestBase
+    public class HomePage
     {
         private WebDriverWait wait;
-
-        public HomePage() 
+        private readonly IWebDriver driver;
+        public HomePage(IWebDriver driver)
         {
+            this.driver = driver;
             this.wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(ContentAccount));
         }
@@ -51,8 +52,6 @@ namespace UITests.Pages
                 throw e;
             }
         }
-
-
         #endregion
     }
 }
